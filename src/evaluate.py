@@ -64,7 +64,7 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
         sentences_input_ids = all_sentences_input_ids[i]
         original_notes = list()
         true_notes = collections.defaultdict(list)
-        predict_notes =  collections.defaultdict(list)
+        predict_notes = collections.defaultdict(list)
 
         for j in range(len(sentences_input_ids)):
             sentence = tokenizer.convert_ids_to_tokens(sentences_input_ids[j])
@@ -76,15 +76,15 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
         for label, start, end in labels:
             for k in range(start, end + 1):
                 results[k][1] = label
-            true_notes[label].append(" ".join(original_notes[start: end + 1]))
+            true_notes[label].append(", ".join(original_notes[start: end + 1]))
 
         for label, start, end in predictions:
             for k in range(start, end + 1):
                 results[k][2] = label
-            predict_notes[label].append(" ".join(original_notes[start: end + 1]))
+            predict_notes[label].append(", ".join(original_notes[start: end + 1]))
 
         prediction_results.append(results)
-        output_results.append({"Original Notes:": " ".join(original_notes),
+        output_results.append({"Original Notes:": ", ".join(original_notes),
                                "True Notes:": true_notes,
                                "Predict Notes:": predict_notes})
 
