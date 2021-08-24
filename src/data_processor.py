@@ -47,16 +47,16 @@ class InputExample(object):
 
 class SenTagProcessor(object):
     def get_debug_examples(self, data_dir):
-        return self._create_examples(self._read_data(os.path.join(data_dir, "toy_notes_debug.json")), 'train')
+        return self._create_examples(self._read_data(os.path.join(data_dir, "notes_debug.json")), 'train')
 
     def get_train_examples(self, data_dir):
-        return self._create_examples(self._read_data(os.path.join(data_dir, "toy_notes_train.json")), 'train')
+        return self._create_examples(self._read_data(os.path.join(data_dir, "notes_train.json")), 'train')
 
     def get_dev_examples(self, data_dir):
-        return self._create_examples(self._read_data(os.path.join(data_dir, "toy_notes_dev.json")), 'dev')
+        return self._create_examples(self._read_data(os.path.join(data_dir, "notes_dev.json")), 'dev')
 
     def get_test_examples(self, data_dir):
-        return self._create_examples(self._read_data(os.path.join(data_dir, "toy_notes_test.json")), 'test')
+        return self._create_examples(self._read_data(os.path.join(data_dir, "notes_test.json")), 'test')
 
     def get_labels(self):
         return ['B-f', 'I-f', 'O', 'B-s', 'I-s']
