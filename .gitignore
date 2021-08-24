@@ -1,0 +1,18 @@
+# OSX dir files
+.DS_Store
+.idea
+
+# python c file
+*.pyc
+*.pdf
+*.npy
+__pycache__
+
+# large file
+pytorch_model.bin
+
+# outputs files
+performance_results.json
+prediction_results.json
+
+test.py
