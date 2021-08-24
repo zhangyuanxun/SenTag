@@ -1,10 +1,11 @@
 from collections import defaultdict
 import torch
 from metrics import SeqEntityScore
-from utils import get_entities, extract_text_from_bert_padding
-
+from utils import get_entities, clean_text
+import collections
 import json
 import os
+
 
 
 def evaluate(args, model, tokenizer, dataloader, labels_list):
@@ -54,28 +55,38 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
     assert len(all_predictions) == len(all_sentences_input_ids) == len(all_labels)
 
     prediction_results = list()
+    output_results = list()
 
     for i in range(idx):
         predictions = all_predictions[i]
         labels = all_labels[i]
         results = list()
         sentences_input_ids = all_sentences_input_ids[i]
-        sentences_context = list()
+        original_notes = list()
+        true_notes = collections.defaultdict(list)
+        predict_notes =  collections.defaultdict(list)
 
         for j in range(len(sentences_input_ids)):
             sentence = tokenizer.convert_ids_to_tokens(sentences_input_ids[j])
             sentence = tokenizer.convert_tokens_to_string(sentence)
+            sentence = clean_text(sentence)
             results.append([sentence, 'O', 'O'])
+            original_notes.append(sentence)
 
         for label, start, end in labels:
             for k in range(start, end + 1):
                 results[k][1] = label
+            true_notes[label].append(" ".join(original_notes[start: end + 1]))
 
         for label, start, end in predictions:
             for k in range(start, end + 1):
                 results[k][2] = label
+            predict_notes[label].append(" ".join(original_notes[start: end + 1]))
 
         prediction_results.append(results)
+        output_results.append({"Original Notes:": " ".join(original_notes),
+                               "True Notes:": true_notes,
+                               "Predict Notes:": predict_notes})
 
     eval_loss = eval_loss / nb_eval_steps
     eval_info, entity_info = metric.result()
@@ -92,3 +103,6 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
 
     with open(os.path.join(args.output_dir, "prediction_results.json"), "w") as f:
         json.dump(prediction_results, f, indent=4)
+
+    with open(os.path.join(args.output_dir, "output_results.json"), "w") as f:
+        json.dump(output_results, f, indent=4)

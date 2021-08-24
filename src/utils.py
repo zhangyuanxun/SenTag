@@ -1,6 +1,11 @@
 import re
 
 
+def clean_text(text):
+    text = text.replace('[CLS]', '').replace('[PAD]', '').replace('[SEP]', '')
+    text = re.sub(' +', ' ', text)
+    return text.strip()
+
 def get_entity_bios(seq, id2label):
     """Gets entities from sequence.
     note: BIOS
