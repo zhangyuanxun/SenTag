@@ -19,7 +19,7 @@ def convert_examples_to_features(examples, label_list, tokenizer, max_seq_length
         sentences_input_ids = list()
         sentences_input_mask = list()
         sentences_type_ids = list()
-        labels = example.labels
+        labels = example.labels[:max_sent_length]
         for sent in example.sentences[:max_sent_length]:
             sent_feature = tokenizer(sent, is_split_into_words=True, max_length=max_seq_length,
                                      padding="max_length", truncation=True)
