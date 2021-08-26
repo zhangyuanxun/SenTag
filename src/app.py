@@ -1,5 +1,5 @@
 from flask import Flask,request,jsonify, render_template
-from src.inference import get_model
+from inference import get_model
 from config import *
 app = Flask(__name__)
 

@@ -9,8 +9,8 @@ from transformers.models.bert.modeling_bert import (
 from transformers import WEIGHTS_NAME
 import nltk
 from torch.utils.data import DataLoader
-from .utils import *
-from .models.sentag import SenTag
+from utils import *
+from models.sentag import SenTag
 from config import *
 import collections
 
