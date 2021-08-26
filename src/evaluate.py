@@ -31,6 +31,7 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
             logits = outputs['logits']
             eval_loss += outputs['loss'].item()
             pred_labels = model.crf.obtain_labels(logits, args.id2label)
+            print(pred_labels)
 
         true_label_ids = inputs['label_ids'].cpu().numpy().tolist()
         sentences_input_ids = inputs['sentences_input_ids']
