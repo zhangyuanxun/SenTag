@@ -36,7 +36,7 @@ def process():
                 continue
             if 'f' in note["Predict Notes"]:
                 family_history += note["Predict Notes"]['f']
-            elif 's' in note["Predict Notes"]:
+            if 's' in note["Predict Notes"]:
                 social_history += note["Predict Notes"]['s']
 
         if not family_history:
