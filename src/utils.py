@@ -1,7 +1,7 @@
 import re
 
 
-def clean_text(text):
+def remove_tags(text):
     text = text.replace('[CLS]', '').replace('[PAD]', '').replace('[SEP]', '')
     text = re.sub(' +', ' ', text)
     return text.strip()

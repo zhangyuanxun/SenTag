@@ -106,7 +106,7 @@ class InferModel:
                 for j in range(len(pred_labels[i])):
                     sentence = self.tokenizer.convert_ids_to_tokens(sentences_input_ids[i][j])
                     sentence = self.tokenizer.convert_tokens_to_string(sentence)
-                    sentence = clean_text(sentence)
+                    sentence = remove_tags(sentence)
                     results.append([sentence, 'O'])
                     original_notes.append(sentence)
 
@@ -117,7 +117,7 @@ class InferModel:
 
                 prediction_results.append(results)
                 predict_notes = '' if not predict_notes else predict_notes
-                output_results.append({"Original Notes": clean_text(" ".join(original_notes)),
+                output_results.append({"Original Notes": remove_tags(" ".join(original_notes)),
                                        "Predict Notes": predict_notes})
 
         return output_results

@@ -1,7 +1,7 @@
 from collections import defaultdict
 import torch
 from metrics import SeqEntityScore
-from utils import get_entities, clean_text
+from utils import get_entities, remove_tags
 import collections
 import json
 import os
@@ -70,7 +70,7 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
         for j in range(len(sentences_input_ids)):
             sentence = tokenizer.convert_ids_to_tokens(sentences_input_ids[j])
             sentence = tokenizer.convert_tokens_to_string(sentence)
-            sentence = clean_text(sentence)
+            sentence = remove_tags(sentence)
             results.append([sentence, 'O', 'O'])
             original_notes.append(sentence)
 
