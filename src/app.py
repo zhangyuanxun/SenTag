@@ -32,6 +32,7 @@ def process():
         original_notes = ""
         for note in out:
             original_notes += note["Original Notes"]
+            original_notes += ', '
             if note["Predict Notes"] == "":
                 continue
             if 'f' in note["Predict Notes"]:
