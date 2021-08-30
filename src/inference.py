@@ -50,7 +50,7 @@ class InferModel:
 
         if len(sentences_input_ids) % self.max_sent_length != 0:
             empty_sentence = self.tokenizer([], is_split_into_words=True, max_length=self.max_seq_length,
-                                       padding="max_length", truncation=True)
+                                            padding="max_length", truncation=True)
 
             while len(sentences_input_ids) % self.max_sent_length != 0:
                 sentences_input_ids.append(empty_sentence['input_ids'])

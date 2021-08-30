@@ -44,6 +44,10 @@ class SenTag(BertPreTrainedModel):
             pooler_output = bert_output['pooler_output']
 
             # we define the sentence features as the average the sequence output and concatenate with pooler output
+            # mask the padding tokens for each sentence
+            last_hidden_state = torch.unsqueeze(sentences_input_mask[i], 2) * last_hidden_state
+
+            # compute the average the sentence feature
             sentence_feature = torch.sum(last_hidden_state, dim=1) / seq_len
             sentence_feature = torch.cat((sentence_feature, pooler_output), dim=1)
             sentences_feature.append(sentence_feature)

@@ -97,7 +97,7 @@ def argument_parser():
                       type=float,
                       help="Max grad norm.")
     args.add_argument("--max_seq_length",
-                      default=16,
+                      default=32,
                       type=int,
                       help="The maximum total input sequence length after WordPiece tokenization. \n"
                            "Sequences longer than this will be truncated, and sequences shorter \n"
