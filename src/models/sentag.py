@@ -8,6 +8,7 @@ from transformers.models.bert.modeling_bert import (
     BertPreTrainedModel,
 )
 from .crf import CRF
+from .layers import SelfAttention
 
 
 class SenTag(BertPreTrainedModel):
@@ -24,6 +25,7 @@ class SenTag(BertPreTrainedModel):
                                      batch_first=True,
                                      bidirectional=True)
 
+        self.self_attention = SelfAttention(hidden_size=self.config.hidden_size, dim=self.config.hidden_size)
         self.ln = LayerNorm(self.config.hidden_size)
         self.classifier = nn.Linear(self.config.hidden_size, len(label_list))
         label2id = {k: i for i, k in enumerate(label_list)}
@@ -45,10 +47,14 @@ class SenTag(BertPreTrainedModel):
 
             # we define the sentence features as the average the sequence output and concatenate with pooler output
             # mask the padding tokens for each sentence
-            last_hidden_state = torch.unsqueeze(sentences_input_mask[i], 2) * last_hidden_state
+            sentence_feature = torch.unsqueeze(sentences_input_mask[i], 2) * last_hidden_state
 
-            # compute the average the sentence feature
-            sentence_feature = torch.sum(last_hidden_state, dim=1) / seq_len
+            # perform self attention layer to re-estimate sentence features
+            sentence_feature, attention_weights = self.self_attention(sentence_feature, sentence_feature, sentence_feature)
+
+            # compute the average pooling the sentence feature
+            sentence_feature = torch.sum(sentence_feature, dim=1) / seq_len
+
             sentence_feature = torch.cat((sentence_feature, pooler_output), dim=1)
             sentences_feature.append(sentence_feature)
 

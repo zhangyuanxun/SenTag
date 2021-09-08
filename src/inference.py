@@ -31,8 +31,12 @@ class InferModel:
         self.sentag_model.to(self.device)
         self.batch_size = batch_size
 
-    def convert_features(self, example):
+    def pre_processing(self, example):
         sentences = nltk.sent_tokenize(example)
+        return sentences
+
+    def convert_features(self, example):
+        sentences = self.pre_processing(example)
         sentences_tokens = [nltk.word_tokenize(sent) for sent in sentences]
 
         sentences_input_ids = list()
@@ -137,7 +141,8 @@ if __name__ == "__main__":
     model = get_model()
     example = "Not all that Mrs. Bennet, however, with the assistance of her five daughters, could ask on the subject, was " \
            "sufficient to draw from her husband any satisfactory description of Mr. Bingley. They attacked him in various " \
-           "ways with barefaced questions, ingenious suppositions, and distant surmises; but he eluded the skill of them all," \
-           " and they were at last obliged to accept the second-hand intelligence of their neighbour,"
+           "ways with barefaced questions. ingenious suppositions. and distant surmises; but he eluded the skill of them all," \
+           " and they were at last obliged to accept the second-hand intelligence of their neighbour. sufficient to draw from her husband any satisfactory description of Mr. Bingley. " \
+              "sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley. sufficient to draw from her husband any satisfactory description of Mr. Bingley."
 
     model.predict(example)
