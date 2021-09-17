@@ -5,7 +5,7 @@ from utils import get_entities, remove_tags
 import collections
 import json
 import os
-
+from sklearn.metrics import classification_report
 
 
 def evaluate(args, model, tokenizer, dataloader, labels_list):
@@ -31,7 +31,6 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
             logits = outputs['logits']
             eval_loss += outputs['loss'].item()
             pred_labels = model.crf.obtain_labels(logits, args.id2label)
-            print(pred_labels)
 
         true_label_ids = inputs['label_ids'].cpu().numpy().tolist()
         sentences_input_ids = inputs['sentences_input_ids']
@@ -57,6 +56,8 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
 
     prediction_results = list()
     output_results = list()
+    true_labels_all = list()
+    pred_labels_all = list()
 
     for i in range(idx):
         predictions = all_predictions[i]
@@ -66,24 +67,32 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
         original_notes = list()
         true_notes = collections.defaultdict(list)
         predict_notes = collections.defaultdict(list)
-
+        true_labels = list()
+        pred_labels = list()
         for j in range(len(sentences_input_ids)):
             sentence = tokenizer.convert_ids_to_tokens(sentences_input_ids[j])
             sentence = tokenizer.convert_tokens_to_string(sentence)
             sentence = remove_tags(sentence)
             results.append([sentence, 'O', 'O'])
+
+            true_labels.append('O')
+            pred_labels.append('O')
             original_notes.append(sentence)
 
         for label, start, end in labels:
             for k in range(start, end + 1):
                 results[k][1] = label
+                true_labels[k] = label
             true_notes[label].append(", ".join(original_notes[start: end + 1]))
 
         for label, start, end in predictions:
             for k in range(start, end + 1):
                 results[k][2] = label
+                pred_labels[k] = label
             predict_notes[label].append(", ".join(original_notes[start: end + 1]))
 
+        true_labels_all += true_labels
+        pred_labels_all += pred_labels
         prediction_results.append(results)
         output_results.append({"Original Notes:": ", ".join(original_notes),
                                "True Notes:": true_notes,
@@ -97,10 +106,15 @@ def evaluate(args, model, tokenizer, dataloader, labels_list):
     print("***** Eval results *****")
     info = "-".join([f' {key}: {value:.4f} ' for key, value in performance_results.items()])
     print(info)
+    print(classification_report(true_labels_all, pred_labels_all))
+    class_perf = classification_report(true_labels_all, pred_labels_all, output_dict=True)
 
     # save the file
     with open(os.path.join(args.output_dir, "performance_results.json"), "w") as f:
         json.dump(performance_results, f)
+
+    with open(os.path.join(args.output_dir, "class_performance.json"), "w") as f:
+        json.dump(class_perf, f, indent=4)
 
     with open(os.path.join(args.output_dir, "prediction_results.json"), "w") as f:
         json.dump(prediction_results, f, indent=4)

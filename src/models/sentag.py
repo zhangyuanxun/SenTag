@@ -50,7 +50,8 @@ class SenTag(BertPreTrainedModel):
             sentence_feature = torch.unsqueeze(sentences_input_mask[i], 2) * last_hidden_state
 
             # perform self attention layer to re-estimate sentence features
-            sentence_feature, attention_weights = self.self_attention(sentence_feature, sentence_feature, sentence_feature)
+            sentence_feature, attention_weights = self.self_attention(sentence_feature, sentence_feature,
+                                                                      sentence_feature)
 
             # compute the average pooling the sentence feature
             sentence_feature = torch.sum(sentence_feature, dim=1) / seq_len

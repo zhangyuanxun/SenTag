@@ -15,5 +15,6 @@ pytorch_model.bin
 performance_results.json
 prediction_results.json
 output_results.json
+class_performance.json
 
 test.py
